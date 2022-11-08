@@ -1,0 +1,114 @@
+//Eduarduino - Projeto Carro robô controlado via RF 433 Mhz
+//Código do receptor 
+
+#include <VirtualWire.h>
+#include <AFMotor.h>
+
+AF_DCMotor motor1(1); //direito atras
+AF_DCMotor motor2(2); // direito frente
+AF_DCMotor motor3(3); // esquerdo frente
+AF_DCMotor motor4(4); // esquerdo atras
+int valor_recebido_RF;
+char recebido_RF_char[40];
+
+ 
+byte message[VW_MAX_MESSAGE_LEN];    // Armazena as mensagens recebidas
+byte msgLength = VW_MAX_MESSAGE_LEN; // Armazena o tamanho das mensagens
+ 
+
+
+
+char recebido=0;
+int cont;
+
+void setup() {
+
+Serial.begin(9600);
+
+    vw_set_rx_pin(13); // Define o pino 5 do Arduino como entrada 
+//de dados do receptor
+    vw_setup(2000);             // Bits por segundo
+    vw_rx_start();              // Inicializa o receptor
+  motor1.setSpeed(255);
+  motor2.setSpeed(255);
+  motor3.setSpeed(255);
+  motor4.setSpeed(255);
+  motor1.run(RELEASE);
+  motor2.run(RELEASE);
+  motor3.run(RELEASE);
+  motor4.run(RELEASE);
+
+
+}
+
+void loop() {
+  
+
+
+uint8_t message[VW_MAX_MESSAGE_LEN];    
+uint8_t msgLength = VW_MAX_MESSAGE_LEN; 
+ 
+ 
+    if (vw_get_message(message, &msgLength)) // Non-blocking
+    {
+       
+      
+      
+          
+        for (int i = 0; i < msgLength; i++)
+       {
+         
+         recebido = message[i];
+       }
+     
+    
+    
+     Serial.println(recebido);
+  
+    }
+    if(recebido=='W'){digitalWrite(10,HIGH);tras();}
+    if(recebido=='F'){digitalWrite(10,HIGH);frente();}
+    if(recebido=='L'){digitalWrite(10,HIGH);esquerda();}
+    if(recebido=='R'){digitalWrite(10,HIGH);direita();}
+    if(recebido=='N'){digitalWrite(10,LOW);parado();}
+}  
+
+void frente(){
+motor1.run(FORWARD); //
+motor2.run(FORWARD); //
+motor3.run(FORWARD);
+motor4.run(BACKWARD);
+delay(200);
+}
+
+void parado(){
+motor1.run(RELEASE);
+motor2.run(RELEASE);
+motor3.run(RELEASE);
+motor4.run(RELEASE);
+delay(200);
+}
+
+void tras(){
+motor1.run(BACKWARD); //
+motor2.run(BACKWARD); //
+motor3.run(BACKWARD);
+motor4.run(FORWARD);
+delay(200);
+}
+
+void direita(){
+motor1.run(BACKWARD);
+motor2.run(BACKWARD);
+motor3.run(FORWARD);
+motor4.run(BACKWARD);
+delay(200);
+}
+
+void esquerda(){
+motor1.run(FORWARD); //
+motor2.run(FORWARD); //
+motor3.run(BACKWARD); //
+motor4.run(FORWARD); //
+delay(200);
+}
