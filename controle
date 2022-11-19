@@ -1,0 +1,115 @@
+#include <VirtualWire.h>
+#include <Keypad.h>
+
+const byte ROWS = 4; 
+const byte COLS = 4; 
+
+int state;
+char *msg;
+char hexaKeys[ROWS][COLS] = {
+  {'F','E','D','C'}, 
+  {'B','A','9','8'}, 
+  {'7','6','5','4'}, 
+  {'3','2','1','0'}  
+};
+byte rowPins[ROWS] = {4, 5, 6, 7}; 
+byte colPins[COLS] = {9, 10, 11, 12}; 
+
+Keypad customKeypad = Keypad( makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS); 
+
+void setup()
+{
+    Serial.begin(9600);   
+    Serial.println("setup");
+    pinMode(13,OUTPUT);
+    customKeypad.addEventListener(keypadEvent);
+    vw_set_tx_pin(8); 
+    vw_setup(2000);  
+}
+
+void loop()
+{
+  char leitura_teclas = customKeypad.getKey();
+
+  if (leitura_teclas) {
+    Serial.println(leitura_teclas); 
+  }
+  switch(state) {
+    case 1:
+      msg = "D";
+      vw_send((uint8_t *)msg, strlen(msg));
+      vw_wait_tx(); 
+      Serial.println(msg);
+    break;
+    
+    case 2:
+      msg = "E";
+      vw_send((uint8_t *)msg, strlen(msg));
+      vw_wait_tx(); 
+      Serial.println(msg);
+    break;
+    
+    case 3:
+      msg = "F";
+      vw_send((uint8_t *)msg, strlen(msg));
+      vw_wait_tx(); 
+      Serial.println(msg);
+    break;
+    
+    case 4:
+      msg = "R";
+      vw_send((uint8_t *)msg, strlen(msg));
+      vw_wait_tx();
+      Serial.println(msg);
+    break;
+    
+    case 5:
+      msg = "L";
+      vw_send((uint8_t *)msg, strlen(msg));
+      vw_wait_tx(); 
+      Serial.println(msg);
+    break;
+    
+    case 6:
+      msg = "B";
+      vw_send((uint8_t *)msg, strlen(msg));
+      vw_wait_tx(); 
+      Serial.println(msg);  
+    break;
+    
+    case 7:
+      msg = "P";
+      vw_send((uint8_t *)msg, strlen(msg));
+      vw_wait_tx(); 
+      Serial.println(msg);  
+    break;
+  }
+  
+  
+}
+
+void keypadEvent(KeypadEvent leitura_teclas){
+    if(customKeypad.getState() == PRESSED ) {
+        if(leitura_teclas=='6' || leitura_teclas=='A'){
+          state = 1;
+        }
+        else if(leitura_teclas=='5' || leitura_teclas=='9'){
+          state = 2;
+        } 
+        else if(leitura_teclas=='F' || leitura_teclas=='C') {
+          state = 7;
+        }
+        else if(leitura_teclas=='1' || leitura_teclas=='2'){
+          state = 3;
+        }
+        else if(leitura_teclas=='7' || leitura_teclas=='B'){
+          state = 4;
+        } 
+        else if(leitura_teclas=='4' || leitura_teclas=='8'){
+          state = 5;
+        }
+        else if(leitura_teclas=='D' || leitura_teclas=='E'){
+          state = 6;
+        }
+    }
+}
