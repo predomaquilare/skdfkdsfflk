@@ -13,7 +13,7 @@ byte message[VW_MAX_MESSAGE_LEN];
 byte msgLength = VW_MAX_MESSAGE_LEN; 
 
 
-int x = 2000;
+int x = 50;
 char recebido=0;
 int cont;
 
