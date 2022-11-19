@@ -50,7 +50,7 @@ void loop()
     break;
     
     case 3:
-      msg = "F";
+      msg = "B";
       vw_send((uint8_t *)msg, strlen(msg));
       vw_wait_tx(); 
       Serial.println(msg);
@@ -71,7 +71,7 @@ void loop()
     break;
     
     case 6:
-      msg = "B";
+      msg = "F";
       vw_send((uint8_t *)msg, strlen(msg));
       vw_wait_tx(); 
       Serial.println(msg);  
